@@ -1,22 +1,39 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Obtém todas as imagens
-    const imagens = document.querySelectorAll('.imagens img');
+    const carouselItems = document.querySelectorAll('.carousel-item');
+    let currentIndex = 0;
 
-    // Adiciona um ouvinte de evento de rolagem à janela
-    window.addEventListener('scroll', function () {
-        // Itera sobre cada imagem
-        imagens.forEach(function (imagem) {
-            // Obtém a posição vertical da parte superior da imagem em relação à viewport
-            const posicaoImagem = imagem.getBoundingClientRect().top;
+    function showItem(index) {
+        carouselItems.forEach(item => item.classList.remove('show', 'hide'));
+        carouselItems[index].classList.add('show');
+    }
 
-            // Verifica se a imagem está visível na viewport
-            if (posicaoImagem < window.innerHeight / 2) {
-                // Adiciona a classe 'visivel' para mostrar a imagem
-                imagem.classList.add('visivel');
-            } else {
-                // Remove a classe 'visivel' para ocultar a imagem
-                imagem.classList.remove('visivel');
-            }
+    function nextItem() {
+        currentIndex = (currentIndex + 1) % carouselItems.length;
+        showItem(currentIndex);
+    }
+
+    // Inicia o carrossel
+    showItem(currentIndex);
+
+    // Define um intervalo para trocar automaticamente os itens (a cada 3 segundos, por exemplo)
+    setInterval(nextItem, 1000);
+
+    // Adiciona evento de mouseover para ajustar a opacidade dos outros itens
+    carouselItems.forEach(item => {
+        item.addEventListener('mouseover', function () {
+            carouselItems.forEach(otherItem => {
+                if (otherItem !== item) {
+                    otherItem.classList.add('hide');
+                }
+            });
+        });
+
+        item.addEventListener('mouseout', function () {
+            carouselItems.forEach(otherItem => {
+                if (otherItem !== item) {
+                    otherItem.classList.remove('hide');
+                }
+            });
         });
     });
 });
